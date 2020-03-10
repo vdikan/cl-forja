@@ -3,7 +3,7 @@
   :author "Vladimir Dikan"
   :license "GPL"
   :depends-on ("let-over-lambda"
-               "lisp-namespace")
+               "serapeum")
   :components ((:module "src"
                 :components
                 ((:file "main"))))
