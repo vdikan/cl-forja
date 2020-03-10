@@ -34,7 +34,7 @@
   (testing "`subst-accsyms` should substitute syms through tree form"
     (ok
      (equal
-      (subst-accsyms
+      (cl-forja:subst-accsyms
        '((1 . "one") (2 . "two") (3 . "three"))
        '(5 2 (3 4 (7 1)) (2 1 8) 1 1 9 (3 2)))
       '(5 "two" ("three" 4 (7 "one"))

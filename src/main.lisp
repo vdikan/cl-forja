@@ -1,7 +1,9 @@
 (defpackage cl-forja
   (:use :cl :serapeum)
   (:export :unroll-plist-f
-           :mk-calculation))
+           :subst-accsyms
+           ;; :mk-calculation
+           ))
 
 (in-package :cl-forja)
 
