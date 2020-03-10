@@ -35,25 +35,29 @@
     (ok
      (equal
       (cl-forja:subst-accsyms
-       '((1 . "one") (2 . "two") (3 . "three"))
-       '(5 2 (3 4 (7 1)) (2 1 8) 1 1 9 (3 2)))
-      '(5 "two" ("three" 4 (7 "one"))
-        ("two" "one" 8) "one" "one" 9 ("three" "two"))))))
+       '((one . "one") (two . "two") (three . "three"))
+       '(5 two (3 4 (7 one)) (2 one 8) 1 one 9 (three 2)))
+      '(5 "two" (3 4 (7 "one")) (2 "one" 8) 1 "one" 9 ("three" 2))))))
 
 
-;; (deftest test-calculation-closure
-;;   (testing "`mk-calculation` should return a dlambda-closure
-;;  around loggable-style plist"
-;;     (let* ((props '(:label "si"
-;;                     :alat  10.26
-;;                     :alat-units "Bohr"))
-;;            (calc (cl-forja:mk-calculation props
-;;                    (set-param :title "Si structure DFT calc")
-;;                    (set-param :code  '("Siesta" "QE")))))
-;;       ;; (setf (symbol-function 'calc)
-;;       ;;       (cl-forja:mk-calculation props
-;;       ;;         (set-param :title "Si structure DFT calc")
-;;       ;;         (set-param :code  '("Siesta" "QE"))))
-;;       (ok (= (funcall (symbol-function 'calc) :get :alat) 10.26))
-;;       (ok (eq (funcall (symbol-function 'calc) :run) 'finished))
-;;       )))
+(deftest test-calculation-closure
+  (testing "`mk-calculation` should return a dlambda-closure around plist"
+    (let* ((props '(:label "si"
+                    :alat  10.26
+                    :alat-units "Bohr"))
+           (calc (cl-forja:mk-calculation props
+                   (set-param :title "Si structure DFT calc")
+                   (set-param :code  '("Siesta" "QE")))))
+      ; Test prepared calculation:
+      (ok (equal (funcall calc) props))
+      (ok (equal (funcall calc :get :alat) 10.26))
+      (ng (equal (funcall calc :get :code) '("Siesta" "QE")))
+      (ok (string-equal (funcall calc :status) "new"))
+      ; Then run it:
+      (ok (eq (funcall calc :run) "finished"))
+      (ok (equal (funcall calc :get :code) '("Siesta" "QE")))
+      (ok (string-equal (funcall calc :status) "finished"))
+      (print (funcall calc :show-runner))
+      (ok (equal (funcall calc :show-runner)
+                 '((set-param :title "Si structure DFT calc")
+                   (set-param :code  '("Siesta" "QE"))))))))
