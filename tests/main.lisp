@@ -49,7 +49,8 @@
                    (set-param :title "Si structure DFT calc")
                    (set-param :code  '("Siesta" "QE")))))
       ; Test prepared calculation:
-      (ok (equal (funcall calc) props))
+      (ok (equal (funcall calc)
+                 (list "CL-Forja Calculation" "new" props)))
       (ok (equal (funcall calc :get :alat) 10.26))
       (ng (equal (funcall calc :get :code) '("Siesta" "QE")))
       (ok (string-equal (funcall calc :status) "new"))
@@ -57,7 +58,32 @@
       (ok (eq (funcall calc :run) "finished"))
       (ok (equal (funcall calc :get :code) '("Siesta" "QE")))
       (ok (string-equal (funcall calc :status) "finished"))
-      (print (funcall calc :show-runner))
       (ok (equal (funcall calc :show-runner)
                  '((set-param :title "Si structure DFT calc")
                    (set-param :code  '("Siesta" "QE"))))))))
+
+
+(deftest test-get-should-work-on-a-copy
+  (testing "calculations` :get should work on a PARAMS plist copy (persistence)"
+    (let* ((calc (cl-forja:mk-calculation '(:foo "bar")))
+           (plc (funcall calc :get :foo)))
+      (setf plc "BaZ")
+      (ok (string-equal (funcall calc :get :foo) "bar")))))
+
+
+(deftest test-set-param
+  (testing "set-param should set only not yet existing properties (persistence)"
+    (let ((calc (cl-forja:mk-calculation '(:foo "bar")
+                  (set-param :fee "bee")
+                  (set-param :foo "BaZ"))))
+      (ok (string-equal (funcall calc :run) "finished"))
+      (ok (string-equal (funcall calc :get :fee) "bee"))
+      (ok (string-equal (funcall calc :get :foo) "bar")))))
+
+
+(deftest test-set-status
+  (testing "set-status should only set status from `new` (persistence)."
+    (let ((calc (cl-forja:mk-calculation '(:foo "bar")
+                  (set-status "not-new"))))
+      (ng (string-equal (funcall calc :run) "finished"))
+      (ok (string-equal (funcall calc :status) "not-new")))))
