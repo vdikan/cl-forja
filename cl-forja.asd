@@ -3,10 +3,13 @@
   :author "Vladimir Dikan"
   :license "GPL"
   :depends-on ("let-over-lambda"
-               "serapeum")
+               "serapeum"
+               "cl-ppcre")
   :components ((:module "src"
                 :components
-                ((:file "main"))))
+                ((:file "main")
+                 (:file "templates"))
+                :serial t))
   :description ""
   :in-order-to ((test-op (test-op "cl-forja/tests"))))
 
