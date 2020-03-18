@@ -7,29 +7,6 @@
 ;; NOTE: To run this test file, execute `(asdf:test-system :cl-forja)' in your Lisp.
 
 
-(deftest test-unroll-plist-f
-  (testing "should unroll plists okay"
-    (let* ((props '(:label "si"
-                    :alat  (10.16 10.26 10.36 10.46)
-                    :alat-units "Bohr"
-                    :bands ("G" "X" "L" "K" "G")))
-           (unrolled
-            (cl-forja:unroll-plist-f
-             props :alat (list :bands
-                               #'(lambda (s)
-                                   (format nil "~a-point" s))))))
-      (ok (member '(:LABEL "si"
-                    :ALAT 10.16
-                    :ALAT-UNITS "Bohr"
-                    :BANDS "L-point")
-                  unrolled :test 'equal))
-      (ok (member '(:LABEL "si"
-                    :ALAT 10.46
-                    :ALAT-UNITS "Bohr"
-                    :BANDS "G-point")
-                  unrolled :test 'equal)))))
-
-
 (deftest test-subst-accsyms
   (testing "`subst-accsyms` should substitute syms through tree form"
     (ok
