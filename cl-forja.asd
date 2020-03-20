@@ -8,6 +8,7 @@
   :components ((:module "src"
                 :components
                 ((:file "main")
+                 (:file "cstructs")
                  (:file "templates"))
                 :serial t))
   :description ""
@@ -20,6 +21,7 @@
                "rove")
   :components ((:module "tests"
                 :components
-                ((:file "main"))))
+                ((:file "main")
+                 (:file "cstructs"))))
   :description "Test system for cl-forja"
   :perform (test-op (op c) (symbol-call :rove :run c)))
