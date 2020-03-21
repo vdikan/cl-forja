@@ -1,5 +1,5 @@
 (defpackage cl-forja/cstructs
-  (:use :cl)
+  (:use :cl :cl-forja/lattices)
   (:export :coordinates-p
            :coordinates-array-p
            :coordinates-array
@@ -16,7 +16,14 @@
            :chem-kind-qe-pseudo
            :kind-reference-cons-p
            :kind-reference-p
-           :kind-reference))
+           :kind-reference
+           :cstruct
+           :cstruct-p
+           :make-cstruct
+           :copy-cstruct
+           :cstruct-atoms
+           :cstruct-kinds
+           :cstruct-lattice))
 
 (in-package :cl-forja/cstructs)
 
@@ -73,3 +80,13 @@
 
 (deftype kind-reference ()
   `(satisfies kind-reference-p))
+
+
+(defstruct cstruct
+  "Generalized crystalline stucture record. Fields are:
++ ATOMS : assoc-list of kind symbols and arrays of positions.
++ KINDS : KIND-REFERENCE for symbol kinds in ATOMS.
++ LATTICE : lattice instance."
+  (atoms nil :type atom-list)
+  (kinds nil :type kind-reference)
+  (lattice (make-lattice) :type lattice))

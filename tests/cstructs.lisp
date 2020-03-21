@@ -53,3 +53,33 @@
       (ok (cl-forja/cstructs:kind-reference-cons-p (cadr refcard)))
       (ok (cl-forja/cstructs:kind-reference-p refcard))
       (ok (typep refcard 'cl-forja/cstructs:kind-reference)))))
+
+
+(deftest test-cstruct-creation
+  (testing "crystal structure instance should be created"
+    (let ((cs (cl-forja/cstructs:make-cstruct
+               :atoms '((Cl . #(#(0.0d0 0.0d0 0.0d0)))
+                        (Na . #(#(0.5d0 0.5d0 0.5d0))))
+               :kinds  (list
+                        (cons 'Na (cl-forja/cstructs:make-chem-kind
+                                   :number 11
+                                   :mass 22.98977
+                                   :siesta-pseudo #P"Na.psf"
+                                   :qe-pseudo #P"Na.upf"))
+                        (cons 'Cl (cl-forja/cstructs:make-chem-kind
+                                   :number 17
+                                   :mass 35.453
+                                   :siesta-pseudo #P"Cl.psf"
+                                   :qe-pseudo #P"Cl.upf")))
+               :lattice (cl-forja/lattices:make-lattice-cF
+                         :alat 5.6402 :units "Ang"))))
+      (ok (typep (cl-forja/cstructs:cstruct-atoms cs)
+                 'cl-forja/cstructs:atom-list))
+      (ok (typep (cl-forja/cstructs:cstruct-kinds cs)
+                 'cl-forja/cstructs:kind-reference))
+      (ok (typep (cl-forja/cstructs:cstruct-lattice cs)
+                 'cl-forja/lattices:lattice))
+      (ok (typep (cl-forja/cstructs:cstruct-lattice cs)
+                 'cl-forja/lattices:lattice-Cubic))
+      (ok (typep (cl-forja/cstructs:cstruct-lattice cs)
+                 'cl-forja/lattices:lattice-cF)))))

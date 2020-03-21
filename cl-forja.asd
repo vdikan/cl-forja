@@ -8,6 +8,7 @@
   :components ((:module "src"
                 :components
                 ((:file "main")
+                 (:file "lattices")
                  (:file "cstructs")
                  (:file "templates"))
                 :serial t))

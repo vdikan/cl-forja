@@ -1,5 +1,5 @@
 (defpackage cl-forja
-  (:use :cl :serapeum :cl-ppcre)
+  (:use :cl :serapeum)
   (:export :subst-accsyms
            :mk-calculation
            :plist-to-template))
