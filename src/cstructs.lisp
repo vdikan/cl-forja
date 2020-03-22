@@ -23,7 +23,9 @@
            :copy-cstruct
            :cstruct-atoms
            :cstruct-kinds
-           :cstruct-lattice))
+           :cstruct-lattice
+           :number-of-kinds
+           :number-of-atoms))
 
 (in-package :cl-forja/cstructs)
 
@@ -90,3 +92,16 @@
   (atoms nil :type atom-list)
   (kinds nil :type kind-reference)
   (lattice (make-lattice) :type lattice))
+
+
+(declaim (ftype (function (cstruct) integer) number-of-kinds))
+
+(defun number-of-kinds (cs)
+  (length (cstruct-atoms cs)))
+
+
+(declaim (ftype (function (cstruct) integer) number-of-atoms))
+
+(defun number-of-atoms (cs)
+  (reduce (lambda (x y) (+ x (length (cdr y))))
+          (cstruct-atoms cs) :initial-value 0))

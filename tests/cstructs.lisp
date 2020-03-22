@@ -81,3 +81,38 @@
                  'cl-forja/lattices:lattice-Cubic))
       (ok (typep (cl-forja/cstructs:cstruct-lattice cs)
                  'cl-forja/lattices:lattice-cF)))))
+
+
+(deftest test-cstruct-counters
+  (testing "counting atoms in cstruct"
+    (let ((cs (cl-forja/cstructs:make-cstruct
+               :atoms '((Mg . #(#(0.0000d0   0.0000d0  0.0000d0)
+                                #(0.5000d0   0.5000d0  0.5000d0)))
+                        (C  . #(#(0.2500d0   0.2500d0  0.2500d0)
+                                #(-0.2500d0 -0.2500d0 -0.2500d0)))
+                        (O  . #(#(0.5274d0  -0.0274d0  0.2500d0)
+                                #(0.2500d0   0.5274d0 -0.0274d0)
+                                #(0.0274d0   0.2500d0  0.5274d0)
+                                #(0.5274d0   0.0274d0 -0.2500d0)
+                                #(0.2500d0  -0.5274d0  0.0274d0)
+                                #(0.0274d0  -0.2500d0 -0.5274d0))))
+               :kinds (list
+                       (cons 'C  (cl-forja/cstructs:make-chem-kind
+                                  :number 6
+                                  :mass 12.0107
+                                  :qe-pseudo #P"C.pbe-n-kjpaw_psl.1.0.0.UPF"))
+                       (cons 'O  (cl-forja/cstructs:make-chem-kind
+                                  :number 8
+                                  :mass 15.9994
+                                  :qe-pseudo #P"O.pbe-n-kjpaw_psl.0.1.UPF"))
+                       (cons 'Mg (cl-forja/cstructs:make-chem-kind
+                                  :number 12
+                                  :mass 24.305
+                                  :qe-pseudo #P"Mg.pbe-n-kjpaw_psl.0.3.0.UPF"))
+                       (cons 'Si (cl-forja/cstructs:make-chem-kind
+                                  :number 14
+                                  :mass 28.0855
+                                  :qe-pseudo #P"Si.pbe-n-rrkjus_psl.1.0.0.UPF")))
+               :lattice (cl-forja/lattices:make-lattice))))
+      (ok (= (cl-forja/cstructs:number-of-atoms cs) 10))
+      (ok (= (cl-forja/cstructs:number-of-kinds cs) 3)))))
