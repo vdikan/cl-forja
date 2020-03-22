@@ -6,12 +6,12 @@
                "serapeum"
                "cl-ppcre")
   :components ((:module "src"
-                :components
-                ((:file "main")
-                 (:file "lattices")
-                 (:file "cstructs")
-                 (:file "templates"))
-                :serial t))
+                        :components
+                        ((:file "lattices")
+                         (:file "cstructs")
+                         (:file "templates")
+                         (:file "main"))
+                        :serial t))
   :description ""
   :in-order-to ((test-op (test-op "cl-forja/tests"))))
 
@@ -21,8 +21,9 @@
   :depends-on ("cl-forja"
                "rove")
   :components ((:module "tests"
-                :components
-                ((:file "main")
-                 (:file "cstructs"))))
+                        :components
+                        ((:file "cstructs")
+                         (:file "templates")
+                         (:file "main"))))
   :description "Test system for cl-forja"
   :perform (test-op (op c) (symbol-call :rove :run c)))

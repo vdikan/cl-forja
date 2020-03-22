@@ -1,4 +1,11 @@
-(in-package :cl-forja)
+(defpackage cl-forja/templates
+  (:use :cl)
+  (:import-from #:cl-ppcre
+                #:regex-replace
+                #:all-matches-as-strings)
+  (:export :plist-to-template))
+
+(in-package :cl-forja/templates)
 
 
 ;; (defun keys-from-template (tplt)

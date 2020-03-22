@@ -1,7 +1,5 @@
 (defpackage cl-forja/tests/cstructs
-  (:use :cl
-        :cl-forja
-        :rove))
+  (:use :cl :rove))
 (in-package :cl-forja/tests/cstructs)
 
 

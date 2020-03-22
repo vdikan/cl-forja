@@ -1,8 +1,9 @@
 (defpackage cl-forja
-  (:use :cl :serapeum)
+  (:use :cl)
+  (:import-from #:serapeum
+                #:assocdr)
   (:export :subst-accsyms
-           :mk-calculation
-           :plist-to-template))
+           :mk-calculation))
 
 (in-package :cl-forja)
 

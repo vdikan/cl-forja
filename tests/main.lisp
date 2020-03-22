@@ -1,8 +1,5 @@
 (defpackage cl-forja/tests/main
-  (:use :cl
-        :cl-forja
-        ;; :let-over-lambda
-        :rove))
+  (:use :cl :rove))
 (in-package :cl-forja/tests/main)
 
 (named-readtables:in-readtable lol:lol-syntax)
@@ -67,19 +64,3 @@
                   (set-status "not-new"))))
       (ng (string-equal (funcall calc :run) "finished"))
       (ok (string-equal (funcall calc :status) "not-new")))))
-
-
-(deftest test-template
-  (testing "template substitution from plist"
-    (let ((pl '(:alat 10.26
-                :label "si"
-                :system-name "Silicon"))
-          (tplt
-           #"SystemLabel ##:label:##
-SystemName ##:system-name:##
-LatticeConstant ##:alat:##"#))
-      (ok (string-equal
-           (cl-forja:plist-to-template pl tplt)
-           #"SystemLabel si
-SystemName Silicon
-LatticeConstant 10.26"#)))))

@@ -17,7 +17,6 @@
            :make-lattice-cF))
 
 
-
 (in-package :cl-forja/lattices)
 
 
