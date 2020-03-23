@@ -11,7 +11,12 @@
                          (:file "cstructs")
                          (:file "templates")
                          (:file "main"))
-                        :serial t))
+                        :serial t)
+               (:module "plugins"
+                        :depends-on ("src")
+                        :components
+                        ((:file "siesta")
+                         (:file "qe"))))
   :description ""
   :in-order-to ((test-op (test-op "cl-forja/tests"))))
 

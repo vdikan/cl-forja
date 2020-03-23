@@ -8,8 +8,8 @@
 (in-package :cl-forja/templates)
 
 
-;; (defun keys-from-template (tplt)
-;;   (all-matches-as-strings "(?<=##:)[-\\w]+(?=:##)" tplt))
+(defun keys-from-template (tplt)
+  (all-matches-as-strings "(?<=##:)[-\\w]+(?=:##)" tplt))
 
 
 (defun make-keyword (name)
@@ -17,10 +17,23 @@
 
 
 (defun plist-to-template (pl tplt)
+  "TODO: refactor & descr"
   (let ((tplts (copy-seq tplt))
-        (mtch (all-matches-as-strings "(?<=##:)[-\\w]+(?=:##)" tplt)))
+        (mtch (keys-from-template tplt)))
     (loop
        for kws in (mapcar (lambda (kw) (format nil "##:~a:##" kw)) mtch)
        and rs in (mapcar (lambda (kw) (format nil "~a" (getf pl (make-keyword kw)))) mtch)
-       do (setf tplts (regex-replace kws tplts rs)))
+       do (if (not (string-equal rs "NIL"))
+              (setf tplts (regex-replace kws tplts rs))))
     tplts))
+
+
+(defgeneric number-of-atoms-to-template (tplt cstruct code-spec))
+
+(defgeneric number-of-kinds-to-template (tplt cstruct code-spec))
+
+(defgeneric kinds-to-template (tplt cstruct code-spec))
+
+(defgeneric lattice-to-template (tplt cstruct code-spec))
+
+(defgeneric atom-list-to-template (tplt cstruct code-spec))
