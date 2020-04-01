@@ -1,9 +1,11 @@
 (defpackage cl-forja/templates
-  (:use :cl)
+  (:use :cl) ; :cl-arrows)
   (:import-from #:cl-ppcre
                 #:regex-replace
                 #:all-matches-as-strings)
-  (:export :plist-to-template))
+  (:export :keys-from-template
+           :plist-to-template))
+;           :cstruct-to-template))
 
 (in-package :cl-forja/templates)
 
@@ -37,3 +39,16 @@
 (defgeneric lattice-to-template (tplt cstruct code-spec))
 
 (defgeneric atom-list-to-template (tplt cstruct code-spec))
+
+(defgeneric cstruct-to-template (tplt cstruct code-spec))
+
+;; (defun cstruct-to-template (init-tplt cstruct code-spec)
+;;   "Thread INIT-TPLT string through the methods that populate
+;; corresponding tag placeholders with data from CSTRUCT in a plugin
+;; format selected by CODE-SPEC keyword."
+;;   (-> init-tplt
+;;       (number-of-atoms-to-template cstruct code-spec)
+;;       (number-of-kinds-to-template cstruct code-spec)
+;;       (kinds-to-template cstruct code-spec)
+;;       (lattice-to-template cstruct code-spec)
+;;       (atom-list-to-template cstruct code-spec)))

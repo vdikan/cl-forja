@@ -4,7 +4,8 @@
   :license "GPL"
   :depends-on ("let-over-lambda"
                "serapeum"
-               "cl-ppcre")
+               "cl-ppcre"
+               "cl-arrows")
   :components ((:module "src"
                         :components
                         ((:file "lattices")

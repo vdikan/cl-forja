@@ -1,5 +1,6 @@
 (defpackage cl-forja/siesta
   (:use :cl
+        :cl-arrows
         :cl-forja/templates
         :cl-forja/cstructs
         :cl-forja/lattices)
@@ -9,7 +10,8 @@
            #:number-of-kinds-to-template
            #:atom-list-to-template
            #:kinds-to-template
-           #:lattice-to-template))
+           #:lattice-to-template
+           #:cstruct-to-template))
 
 (in-package :cl-forja/siesta)
 
@@ -76,3 +78,13 @@
     ((tplt string) (cs cstruct) (code-spec (eql :siesta)))
   (plist-to-template
    (siesta-lattice-properties (cstruct-lattice cs)) tplt))
+
+
+(defmethod cstruct-to-template
+    ((tplt string) (cs cstruct) (code-spec (eql :siesta)))
+  (-> tplt
+      (number-of-atoms-to-template cs :siesta)
+      (number-of-kinds-to-template cs :siesta)
+      (kinds-to-template cs :siesta)
+      (lattice-to-template cs :siesta)
+      (atom-list-to-template cs :siesta)))
