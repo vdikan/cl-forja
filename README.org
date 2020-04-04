@@ -1,4 +1,7 @@
-* Cl-Forja 
+* Cl-Forja
+
+This Common Lisp library provides =mk-calculation= macro, as well as
+input-file creation utility definitions for selected DFT codes.
 
 ** Usage
 
