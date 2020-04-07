@@ -63,6 +63,9 @@ format selected by CODE-SPEC keyword."
 (defun populate-template-file (tplt-src plist cs code-spec)
   "Local function that populates template taken from TPLT-SRC
 with data from PLIST and crystal data CS based on the CODE-SPEC."
-  (-<> (contents-of-file tplt-src)
+  (-<> (with-open-file (stream tplt-src)
+         (let ((contents (make-string (file-length stream))))
+           (read-sequence contents stream)
+           contents))
        (plist-to-template plist <>)
        (cstruct-to-template <> cs code-spec)))
