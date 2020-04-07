@@ -5,24 +5,18 @@
         :cl-forja/cstructs
         :cl-forja/lattices)
   (:import-from #:serapeum
-                #:assocdr)
-  (:export #:number-of-atoms-to-template
-           #:number-of-kinds-to-template
-           #:atom-list-to-template
-           #:kinds-to-template
-           #:lattice-to-template
-           #:cstruct-to-template))
+                #:assocdr))
 
 (in-package :cl-forja/siesta)
 
 
-(defmethod number-of-atoms-to-template
+(defmethod cl-forja/templates:number-of-atoms-to-template
     ((tplt string) (cs cstruct) (code-spec (eql :siesta)))
   (plist-to-template
    (list :number-of-atoms (number-of-atoms cs)) tplt))
 
 
-(defmethod number-of-kinds-to-template
+(defmethod cl-forja/templates:number-of-kinds-to-template
     ((tplt string) (cs cstruct) (code-spec (eql :siesta)))
   (plist-to-template
    (list :number-of-kinds (number-of-kinds cs)) tplt))
@@ -41,7 +35,7 @@
                                  (cdr (nth i (cstruct-atoms cs))))))))))
 
 
-(defmethod atom-list-to-template
+(defmethod cl-forja/templates:atom-list-to-template
     ((tplt string) (cs cstruct) (code-spec (eql :siesta)))
   (plist-to-template
    (list :atom-list (siesta-atom-list cs)) tplt))
@@ -60,7 +54,7 @@
                                (string-capitalize (symbol-name kind-sym))))))))))
 
 
-(defmethod kinds-to-template
+(defmethod cl-forja/templates:kinds-to-template
     ((tplt string) (cs cstruct) (code-spec (eql :siesta)))
   (plist-to-template
    (list :chem-kinds (siesta-kinds cs)) tplt))
@@ -74,17 +68,7 @@
         :lattice-parameters (format nil "~&  1.0  1.0  1.0  90  90  90")))
 
 
-(defmethod lattice-to-template
+(defmethod cl-forja/templates:lattice-to-template
     ((tplt string) (cs cstruct) (code-spec (eql :siesta)))
   (plist-to-template
    (siesta-lattice-properties (cstruct-lattice cs)) tplt))
-
-
-(defmethod cstruct-to-template
-    ((tplt string) (cs cstruct) (code-spec (eql :siesta)))
-  (-> tplt
-      (number-of-atoms-to-template cs :siesta)
-      (number-of-kinds-to-template cs :siesta)
-      (kinds-to-template cs :siesta)
-      (lattice-to-template cs :siesta)
-      (atom-list-to-template cs :siesta)))

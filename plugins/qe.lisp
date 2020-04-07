@@ -5,24 +5,18 @@
         :cl-forja/cstructs
         :cl-forja/lattices)
   (:import-from #:serapeum
-                #:assocdr)
-  (:export #:number-of-atoms-to-template
-           #:number-of-kinds-to-template
-           #:atom-list-to-template
-           #:kinds-to-template
-           #:lattice-to-template
-           #:cstruct-to-template))
+                #:assocdr))
 
 (in-package :cl-forja/qe)
 
 
-(defmethod number-of-atoms-to-template
+(defmethod cl-forja/templates:number-of-atoms-to-template
     ((tplt string) (cs cstruct) (code-spec (eql :qe)))
   (plist-to-template
    (list :number-of-atoms (number-of-atoms cs)) tplt))
 
 
-(defmethod number-of-kinds-to-template
+(defmethod cl-forja/templates:number-of-kinds-to-template
     ((tplt string) (cs cstruct) (code-spec (eql :qe)))
   (plist-to-template
    (list :number-of-kinds (number-of-kinds cs)) tplt))
@@ -43,7 +37,7 @@
                                  (cdr l))))))))
 
 
-(defmethod atom-list-to-template
+(defmethod cl-forja/templates:atom-list-to-template
     ((tplt string) (cs cstruct) (code-spec (eql :qe)))
   (plist-to-template
    (list :atom-list (qe-atom-list cs)) tplt))
@@ -62,7 +56,7 @@
                                (chem-kind-qe-pseudo (assocdr kind-sym (cstruct-kinds cs)))))))))))
 
 
-(defmethod kinds-to-template
+(defmethod cl-forja/templates:kinds-to-template
     ((tplt string) (cs cstruct) (code-spec (eql :qe)))
   (plist-to-template
    (list :chem-kinds (qe-kinds cs)) tplt))
@@ -91,17 +85,7 @@
   (list :ibrav "2" :celldm1 (format nil "~,8f" (celldm1 latt))))
 
 
-(defmethod lattice-to-template
+(defmethod cl-forja/templates:lattice-to-template
     ((tplt string) (cs cstruct) (code-spec (eql :qe)))
   (plist-to-template
    (qe-lattice-properties (cstruct-lattice cs)) tplt))
-
-
-(defmethod cstruct-to-template
-    ((tplt string) (cs cstruct) (code-spec (eql :qe)))
-  (-> tplt
-      (number-of-atoms-to-template cs :qe)
-      (number-of-kinds-to-template cs :qe)
-      (kinds-to-template cs :qe)
-      (lattice-to-template cs :qe)
-      (atom-list-to-template cs :qe)))
