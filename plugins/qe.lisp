@@ -27,7 +27,7 @@
     (dolist (l (cstruct-atoms cs) res)
       (setf res
             (format nil "~a~&~a" res
-                    (format nil"~{~&~{~4a ~,12@f ~,12@f ~,12@f~}~}"
+                    (format nil"~{~&~{~4a ~,12f ~,12f ~,12f~}~}"
                             (map 'list (lambda (vec) (list
                                                       (string-capitalize
                                                        (symbol-name (car l)))
