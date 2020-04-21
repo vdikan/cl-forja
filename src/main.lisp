@@ -56,7 +56,8 @@ for exceptional conditions in the RUNNER-FORM."
                           accessors-list)))
     `(let ((,g!params ,plist)            ; nslet? for/from lisp-namespace
            (,g!runner-form '(,@body))    ; TODO: print to string, no quoting, no package name saving(?)
-           (,g!status "new"))
+           (,g!status "new")
+           (,g!hash (sxhash ,plist)))
        (labels ((,(assocdr 'all-params accsyms) () (copy-list ,g!params))
                 (,(assocdr 'get-param  accsyms) (,g!key) (getf ,g!params ,g!key)) ; setf-able
                 (,(assocdr 'set-param  accsyms) (,g!key ,g!val)
@@ -68,7 +69,7 @@ for exceptional conditions in the RUNNER-FORM."
                   (if (string-equal ,g!status "new")
                       (setf ,g!status ,g!str)
                       (warn "Calculation status already set to ~S. Ignoring." ,g!status)))
-                (,(assocdr 'hash accsyms) () (sxhash ,g!params)))
+                (,(assocdr 'hash accsyms) () ,g!hash))
          (lol:dlambda
           (:get (,g!kw) (getf (copy-list ,g!params) ,g!kw)) ; not setf-able into ,g!params
           (:status () (,(assocdr 'get-status accsyms)))
