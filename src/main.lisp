@@ -74,8 +74,12 @@ for exceptional conditions in the RUNNER-FORM."
           (:status () (,(assocdr 'get-status accsyms)))
           (:hash () (,(assocdr 'hash accsyms)))
           (:show-runner () (copy-list ,g!runner-form))
-          (:run () ,@(subst-accsyms accsyms body)
-                (,(assocdr 'set-status accsyms) "finished"))
+          (:run ()
+                (if (string-equal ,g!status "new")
+                    (progn
+                      ,@(subst-accsyms accsyms body)
+                      (,(assocdr 'set-status accsyms) "finished"))
+                    (warn "Calculation execution already resulted in ~S. Ignoring." ,g!status)))
           (t () (list "CL-Forja Calculation"
                       (,(assocdr 'get-status accsyms))
                       (,(assocdr 'all-params accsyms)))))))))
