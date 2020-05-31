@@ -39,25 +39,24 @@ works only if such a key did not exist before.
 + (GET-STATUS) : returns a copy of the surrent status string.
 + (SET-STATUS STR) : sets STATUS to STR only if STATUS is `new`.
 FIXME: implement error-handling instead of current permissive behavior (warn).
-+ (HASH) : return (SXHASH PLIST). Therefore, time-independent. Take care.
 
-The behavior of the calculation object depends on keyword arguments it's called with:
+the behavior of the calculation object depends on keyword arguments it's called with:
 + no arguments (DEFAULT) : outputs calculation info in the form of:
 (LIST `CL-Forja Calculation` STATUS PARAMS)
 + :GET :KEYWORD : outputs corresponding value from PARAMS plist; works on a copy of
 PARAMS - therefore, not setf-able.
++ :ALL : outputs all the PARAMS plist. Internally calls ALL-PARAMS.
 + :STATUS : outputs current status string. Internally calls GET-STATUS.
 + :SHOW-RUNNER : outputs a copy of the RUNNER-FORM.
 + :RUN : Runs the calculation. Executes the compiled RUNNER-FORM (the macro body),
 then sets its STATUS to `finished`. Consider composing other than `finished` STATUS
 for exceptional conditions in the RUNNER-FORM."
-  (let* ((accessors-list '(all-params get-param set-param get-status set-status hash))
+  (let* ((accessors-list '(all-params get-param set-param get-status set-status))
          (accsyms (mapcar (lambda (acc) `(,acc . ,(gensym (symbol-name acc))))
                           accessors-list)))
     `(let ((,g!params ,plist)            ; nslet? for/from lisp-namespace
            (,g!runner-form '(,@body))    ; TODO: print to string, no quoting, no package name saving(?)
-           (,g!status "new")
-           (,g!hash (sxhash ,plist)))
+           (,g!status "new"))
        (labels ((,(assocdr 'all-params accsyms) () (copy-list ,g!params))
                 (,(assocdr 'get-param  accsyms) (,g!key) (getf ,g!params ,g!key)) ; setf-able
                 (,(assocdr 'set-param  accsyms) (,g!key ,g!val)
@@ -68,12 +67,11 @@ for exceptional conditions in the RUNNER-FORM."
                 (,(assocdr 'set-status accsyms) (,g!str)
                   (if (string-equal ,g!status "new")
                       (setf ,g!status ,g!str)
-                      (warn "Calculation status already set to ~S. Ignoring." ,g!status)))
-                (,(assocdr 'hash accsyms) () ,g!hash))
+                      (warn "Calculation status already set to ~S. Ignoring." ,g!status))))
          (lol:dlambda
           (:get (,g!kw) (getf (copy-list ,g!params) ,g!kw)) ; not setf-able into ,g!params
+          (:all () (,(assocdr 'all-params accsyms)))
           (:status () (,(assocdr 'get-status accsyms)))
-          (:hash () (,(assocdr 'hash accsyms)))
           (:show-runner () (copy-list ,g!runner-form))
           (:run ()
                 (if (string-equal ,g!status "new")

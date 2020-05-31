@@ -28,6 +28,7 @@
       ; Test prepared calculation:
       (ok (equal (funcall calc)
                  (list "CL-Forja Calculation" "new" props)))
+      (ok (equal (funcall calc :all) props))
       (ok (equal (funcall calc :get :alat) 10.26))
       (ng (equal (funcall calc :get :code) '("Siesta" "QE")))
       (ok (string-equal (funcall calc :status) "new"))
