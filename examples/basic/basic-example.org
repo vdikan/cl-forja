@@ -1,0 +1,322 @@
+#+PROPERTY: header-args :mkdirp yes
+#+PROPERTY: header-args:lisp :results "value verbatim" :exports "both"
+* Basic examples
+
+These show basics of =mk-calculation= macro usage for work with
+=cl-forja='s calculation instances.
+
+** Setup
+I assume you have ~cl-forja~ mirror in ~quicklisp/local-projects/~
+
+First, we load =cl-forja='s main package...
+
+#+begin_src lisp :results silent :eval yes
+  (ql:quickload :cl-forja)
+#+end_src
+
+...and set us a separate package for the example.
+
+#+begin_src lisp :results silent :tangle basic.lisp
+  (cl:defpackage :cl-forja.examples.basic
+    (:use :cl :cl-forja))
+#+end_src
+
+** First steps
+Below I'm creating our first and very simple calculation object.
+
+The ~mk-calculation~ macro gets first a property list as a data container
+(note that it is quoted with *'* as a short-hand notation for list representation)
+and then the *"runner"* body that just prints a string.
+
+#+begin_src lisp :tangle basic.lisp
+  (cl:in-package :cl-forja.examples.basic)
+
+  (setf (symbol-function 'calc)
+        (mk-calculation '(:x 42) (print "Hello")))
+#+end_src
+
+#+RESULTS:
+: #<CLOSURE (LAMBDA (&REST #:ARGS13)) {1006D5FE3B}>
+
+You might notice that definition of "calc" instance is a bit strange.
+
+Calculations created by Forja are *closures* - actually functions stored
+together with calculation data.
+
+You may think of them as of "callable objects", if you like, but lisp
+interprets them as functions. And since Common Lisp has separate namespaces
+for variables and functions, the symbol pointing to our calculation belongs
+to the latter namespace, and this we have to state explicitly here with
+~(symbol-function)~ operator.
+
+So, ~calc~ is callable - let's call it then:
+
+#+begin_src lisp :tangle basic.lisp
+  (cl:in-package :cl-forja.examples.basic)
+
+  (calc)
+#+end_src
+
+#+RESULTS:
+: ("CL-Forja Calculation" "new" (:X 42))
+
+When called with no arguments calculations return a list of:
+
+1. *"CL-Forja Calculation" string*. To understand what we are looking at.
+   (I also use it for a cheap type-checker at the moment)
+2. A status string. Always *"new"* for fresh calculations prior to being run.
+3. A property list with all the data currently stored in calculation object.
+
+What about the *"runner"* form? Well, as a very specific and sometimes a
+very long entity, it deserves it's own accessor. It is invoked if
+calculation is given ~:show-runner~ keyword as an argument:
+
+#+begin_src lisp :tangle basic.lisp
+  (cl:in-package :cl-forja.examples.basic)
+
+  (calc :show-runner)
+#+end_src
+
+#+RESULTS:
+: ((PRINT "Hello"))
+
+Gets us a list with all instructions we've put in the ~@body~ of
+~mk-calculation~.
+
+Let's run the calculation already! In order to do it, call it with
+~:run~:
+
+#+begin_src lisp :tangle basic.lisp
+  (cl:in-package :cl-forja.examples.basic)
+
+  (calc :run)
+#+end_src
+
+#+RESULTS:
+: finished
+
+We see expected output made by the runner, and get as a result the
+updated status. By default, *"finished"* is set if all the instructions
+of the runner-form executed successfully.
+
+I intend to script other statuses depending on error situations that may
+occur inside the runner - but the core Forja is not aware of that.
+All it knows is that calculations are *"new"* and not *"new"*.
+More on that later.
+
+Let's inspect the calculation:
+
+#+begin_src lisp :tangle basic.lisp
+  (cl:in-package :cl-forja.examples.basic)
+
+  (calc)
+#+end_src
+
+#+RESULTS:
+: ("CL-Forja Calculation" "finished" (:X 42))
+
+Not much has changed, only the status is updated.
+We may check it again by accessing status only:
+
+#+begin_src lisp :tangle basic.lisp
+  (cl:in-package :cl-forja.examples.basic)
+
+  (calc :status)
+#+end_src
+
+#+RESULTS:
+: finished
+
+And of course, the separate data pieces are accessible too, through
+~:get~:
+
+#+begin_src lisp :tangle basic.lisp
+  (cl:in-package :cl-forja.examples.basic)
+
+  (calc :get :x)
+#+end_src
+
+#+RESULTS:
+: 42 (6 bits, #x2A, #o52, #b101010)
+
+** Restrictions
+
+By design, certain constraints are applied for calculations' data accessors,
+both external and internal. In fact, most of the code of ~mk-calculation~ macro
+defines a protocol for the accessors on top of a well-established =dlambda= pattern.
+
+To illustrate, let's alter parameters data of our ~calc~.
+We later use ~:all~ accessor keyword to get the whole data parameters
+list of the calculation:
+
+#+begin_src lisp :tangle basic.lisp
+  (cl:in-package :cl-forja.examples.basic)
+
+  (setf (third (calc)) (list :y 84))
+#+end_src
+
+#+RESULTS:
+: (:Y 84)
+
+#+begin_src lisp :tangle basic.lisp
+  (cl:in-package :cl-forja.examples.basic)
+
+  (calc)
+#+end_src
+
+#+RESULTS:
+: ("CL-Forja Calculation" "finished" (:X 42))
+
+#+begin_src lisp :tangle basic.lisp
+  (cl:in-package :cl-forja.examples.basic)
+
+  (calc :all)
+#+end_src
+
+#+RESULTS:
+: (:X 42)
+
+That did not work out. ~calc~ still has ~'(:x 42)~ as its parameters list.
+That is because the default accessor actually gives a copy of it.
+
+The external accessors are designed to give copies of data sequences,
+thus making calculations persistent in-memory objects.
+
+The only way to change properties of a calculation already created is to *"run"* it,
+and internal accessors' protocols are also fine-grained.
+
+By the way, what if I want to run ~calc~ again?
+
+#+begin_src lisp :tangle basic.lisp
+  (cl:in-package :cl-forja.examples.basic)
+
+  (calc :run)
+#+end_src
+
+#+RESULTS:
+: NIL
+
+Nothing happened. In actual REPL a warning appears saying that we
+already changed the status of ~calc~. This is an indicator that the
+execution was once performed, resulting in changing of the status from
+*"new"*, which we suppose to do only once with a certain calculation
+instance.
+
+If we want to run a similar calculation again, we should make a
+copy from ~calc~'s data instead. Mind that we still can retrieve all
+the info needed from calc, since we have access to the parameters as
+well as to the runner form.
+
+Example of a straightforward copy:
+
+#+begin_src lisp :tangle basic.lisp
+  (cl:in-package :cl-forja.examples.basic)
+
+  (setf (symbol-function 'calc-copy)
+        (eval `(mk-calculation (quote ,(calc :all))
+                 ,@(calc :show-runner))))
+#+end_src
+
+#+RESULTS:
+: #<CLOSURE (LAMBDA (&REST #:ARGS1)) {1004D80D1B}>
+
+#+begin_src lisp :tangle basic.lisp
+  (cl:in-package :cl-forja.examples.basic)
+
+  (calc-copy)
+#+end_src
+
+#+RESULTS:
+: ("CL-Forja Calculation" "new" (:X 42))
+
+#+begin_src lisp :tangle basic.lisp
+  (cl:in-package :cl-forja.examples.basic)
+
+  (calc-copy :run)
+#+end_src
+
+#+RESULTS:
+: finished
+
+Take care though: this approach does not account for data
+stored during execution of the calculation runner.
+
+A more robust utility function/macro to make calculation copies
+is on the way.
+
+** Another example
+
+This time we make a calculation that actually calculates a square and
+cube of its parameters:
+
+#+begin_src lisp :tangle basic.lisp
+  (cl:in-package :cl-forja.examples.basic)
+
+  (setf (symbol-function 'wrong-square-cube)
+        (mk-calculation '(:x 42 :y 13)
+          (set-param :x (* (get-param :x)
+                           (get-param :x)))
+          (set-param :y (* (get-param :y)
+                           (get-param :y)
+                           (get-param :y)))))
+#+end_src
+
+#+RESULTS:
+: #<CLOSURE (LAMBDA (&REST #:ARGS13)) {1004F69ABB}>
+
+We use ~set-param~ and ~get-param~ to set & get values of internal
+parameters of our calculation inside the runner form. But as the name
+suggests, this example is wrong:
+
+#+begin_src lisp :tangle basic.lisp
+  (cl:in-package :cl-forja.examples.basic)
+
+  (wrong-square-cube :run)
+  (wrong-square-cube)
+#+end_src
+
+#+RESULTS:
+: ("CL-Forja Calculation" "finished" (:X 42 :Y 13))
+
+Despite the runner form executes, the parameters remain the same.
+In actual REPL, warnings will be signaled.
+
+This is an intended behavior: the runner-form accessors are allowed
+to update the parameters list by only adding new keywords in it.
+
+A correct example looks like:
+
+#+begin_src lisp :tangle basic.lisp
+  (cl:in-package :cl-forja.examples.basic)
+
+  (setf (symbol-function 'square-cube)
+        (mk-calculation '(:x 42 :y 13)
+          (set-param :x3 (* (get-param :x)
+                            (get-param :x)))
+          (format t "Square of ~a is ~a~%" (get-param :x) (get-param :x3))
+          (set-param :y3 (* (get-param :y)
+                            (get-param :y)
+                            (get-param :y)))
+          (format t "Cube of ~a is ~a~%" (get-param :y) (get-param :y3))))
+#+end_src
+
+#+RESULTS:
+: #<CLOSURE (LAMBDA (&REST #:ARGS13)) {10053D1ACB}>
+
+#+begin_src lisp :tangle basic.lisp
+  (cl:in-package :cl-forja.examples.basic)
+
+  (square-cube :run)
+  (square-cube)
+#+end_src
+
+#+RESULTS:
+: ("CL-Forja Calculation" "finished" (:Y3 2197 :X3 1764 :X 42 :Y 13))
+** Conclusion
+
+Those trivial examples support general design ideas embodied in =mk-calculation=:
+/controllable mutability of data parameters alongside one-time execution of side-effects/.
+
+The rest of the Forja contains mostly utilities that apply this design to
+a particular subset of Quantum Physics computational programs. However, at
+its core Forja can be used to follow tasks for any "black-box" operation routines.
