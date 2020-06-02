@@ -65,3 +65,12 @@
                   (set-status "not-new"))))
       (ng (string-equal (funcall calc :run) "finished"))
       (ok (string-equal (funcall calc :status) "not-new")))))
+
+
+(deftest test-get-params-from
+  (testing "get-params-from should work"
+    (let ((calc (cl-forja:mk-calculation '(:x "X-param"
+                                           :y "Y-param"
+                                           :z "Z-param"))))
+      (ok (equal (cl-forja:get-params-from calc :y :p :z)
+                 '(:y "Y-param" :z "Z-param"))))))

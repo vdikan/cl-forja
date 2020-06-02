@@ -2,7 +2,10 @@
   (:use :cl)
   (:import-from #:serapeum
                 #:assocdr)
+  (:import-from #:alexandria
+                #:flatten)
   (:export :subst-accsyms
+           :get-params-from
            :mk-calculation))
 
 (in-package :cl-forja)
@@ -20,6 +23,17 @@
     (dolist (asc accsyms result-tree)
       (setf result-tree
             (subst (cdr asc) (car asc) result-tree :test 'symnames-equalp)))))
+
+
+(defun get-params-from-plist (plist &rest keys)
+  "Narrow PLIST to a certain key set in KEYS."
+  (flatten (loop for k in keys
+                 collect (let ((a (getf plist k))) (if a (list k a) nil)))))
+
+
+(defun get-params-from (calc &rest keys)
+  "Get plist with CALC calculation properties for keywords specified in KEYS."
+  (apply #'get-params-from-plist (funcall calc :all) keys))
 
 
 (lol:defmacro! mk-calculation (plist &body body)
