@@ -5,19 +5,24 @@
   :depends-on ("let-over-lambda"
                "serapeum"
                "cl-ppcre"
-               "cl-arrows")
+               "cl-arrows"
+               "vgplot")
   :components ((:module "src"
-                        :components
-                        ((:file "lattices")
-                         (:file "cstructs")
-                         (:file "templates")
-                         (:file "main"))
-                        :serial t)
+                :components
+                ((:file "lattices")
+                 (:file "cstructs")
+                 (:file "templates")
+                 (:file "main"))
+                :serial t)
                (:module "plugins"
-                        :depends-on ("src")
-                        :components
-                        ((:file "siesta")
-                         (:file "qe"))))
+                :depends-on ("src")
+                :components
+                ((:file "siesta")
+                 (:file "qe")))
+               (:module "graphics"
+                :depends-on ("src")
+                :components
+                ((:file "charts"))))
   :description ""
   :in-order-to ((test-op (test-op "cl-forja/tests"))))
 
@@ -27,9 +32,10 @@
   :depends-on ("cl-forja"
                "rove")
   :components ((:module "tests"
-                        :components
-                        ((:file "cstructs")
-                         (:file "templates")
-                         (:file "main"))))
+                :components
+                ((:file "charts")
+                 (:file "cstructs")
+                 (:file "templates")
+                 (:file "main"))))
   :description "Test system for cl-forja"
   :perform (test-op (op c) (symbol-call :rove :run c)))
