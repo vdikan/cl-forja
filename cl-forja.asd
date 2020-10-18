@@ -1,14 +1,13 @@
 (defsystem "cl-forja"
-  :version "0.1.0"
+  :version "0.1.1"
   :author "Vladimir Dikan"
   :license "GPL"
-  :depends-on ("let-over-lambda"
-               "serapeum"
-               "cl-ppcre"
+  :depends-on ("cl-ppcre"
                "cl-arrows")
   :components ((:module "src"
                 :components
-                ((:file "lattices")
+                ((:file "borrows")
+                 (:file "lattices")
                  (:file "cstructs")
                  (:file "templates")
                  (:file "main"))
@@ -29,7 +28,8 @@
                "rove")
   :components ((:module "tests"
                 :components
-                ((:file "cstructs")
+                ((:file "borrows")
+                 (:file "cstructs")
                  (:file "templates")
                  (:file "main"))))
   :description "Test system for cl-forja"

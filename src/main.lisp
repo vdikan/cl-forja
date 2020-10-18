@@ -1,9 +1,5 @@
 (defpackage cl-forja
-  (:use :cl)
-  (:import-from #:serapeum
-                #:assocdr)
-  (:import-from #:alexandria
-                #:flatten)
+  (:use :cl :cl-forja/borrows)
   (:export :subst-accsyms
            :get-params-from
            :mk-calculation))
@@ -36,7 +32,7 @@
   (apply #'get-params-from-plist (funcall calc :all) keys))
 
 
-(lol:defmacro! mk-calculation (plist &body body)
+(defmacro! mk-calculation (plist &body body)
   "This macro creates a funcallable object (closure) representing a calculation.
 A calculation is initialized with PLIST - an arbitrary property list. The rest of
 the expressions in MK-CALCULATION body designate a RUNNER-FORM, that acts on
@@ -82,7 +78,7 @@ for exceptional conditions in the RUNNER-FORM."
                   (if (string-equal ,g!status "new")
                       (setf ,g!status ,g!str)
                       (warn "Calculation status already set to ~S. Ignoring." ,g!status))))
-         (lol:dlambda
+         (dlambda
           (:get (,g!kw) (getf (copy-list ,g!params) ,g!kw)) ; not setf-able into ,g!params
           (:all () (,(assocdr 'all-params accsyms)))
           (:status () (,(assocdr 'get-status accsyms)))

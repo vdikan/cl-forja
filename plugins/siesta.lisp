@@ -1,11 +1,10 @@
 (defpackage cl-forja/siesta
   (:use :cl
         :cl-arrows
+        :cl-forja/borrows
         :cl-forja/templates
         :cl-forja/cstructs
-        :cl-forja/lattices)
-  (:import-from #:serapeum
-                #:assocdr))
+        :cl-forja/lattices))
 
 (in-package :cl-forja/siesta)
 

@@ -2,8 +2,6 @@
   (:use :cl :rove))
 (in-package :cl-forja/tests/main)
 
-(named-readtables:in-readtable lol:lol-syntax)
-
 
 (deftest test-subst-accsyms
   (testing "`subst-accsyms` should substitute syms through tree form"
