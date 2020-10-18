@@ -3,9 +3,6 @@
 (in-package :cl-forja/tests/cstructs)
 
 
-;; NOTE: To run this test file, execute `(asdf:test-system :cl-forja)' in your Lisp.
-
-
 (deftest test-coordinates-type
   (testing "should correctly define coordinates-arrays types"
     (ok

@@ -4,8 +4,6 @@
 
 (named-readtables:in-readtable lol:lol-syntax)
 
-;; NOTE: To run this test file, execute `(asdf:test-system :cl-forja)' in your Lisp.
-
 
 (deftest test-subst-accsyms
   (testing "`subst-accsyms` should substitute syms through tree form"

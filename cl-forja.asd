@@ -5,8 +5,7 @@
   :depends-on ("let-over-lambda"
                "serapeum"
                "cl-ppcre"
-               "cl-arrows"
-               "vgplot")
+               "cl-arrows")
   :components ((:module "src"
                 :components
                 ((:file "lattices")
@@ -18,13 +17,10 @@
                 :depends-on ("src")
                 :components
                 ((:file "siesta")
-                 (:file "qe")))
-               (:module "graphics"
-                :depends-on ("src")
-                :components
-                ((:file "charts"))))
-  :description ""
+                 (:file "qe"))))
+  :description "Side-effects tracking system for rapid computational workflows prototyping."
   :in-order-to ((test-op (test-op "cl-forja/tests"))))
+
 
 (defsystem "cl-forja/tests"
   :author "Vladimir Dikan"
@@ -33,9 +29,11 @@
                "rove")
   :components ((:module "tests"
                 :components
-                ((:file "charts")
-                 (:file "cstructs")
+                ((:file "cstructs")
                  (:file "templates")
                  (:file "main"))))
   :description "Test system for cl-forja"
   :perform (test-op (op c) (symbol-call :rove :run c)))
+
+
+;; NOTE: To run this test file, execute `(asdf:test-system :cl-forja)' in your Lisp.

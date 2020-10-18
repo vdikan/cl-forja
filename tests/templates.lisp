@@ -5,8 +5,6 @@
 
 (named-readtables:in-readtable lol:lol-syntax)
 
-;; NOTE: To run this test file, execute `(asdf:test-system :cl-forja)' in your Lisp.
-
 
 (deftest test-template
   (testing "template substitution from plist"
