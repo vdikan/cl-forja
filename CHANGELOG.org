@@ -1,0 +1,6 @@
+* Changelog
+** 0.1.1 [2020-10-19 Mon]
+Codebase structure. Project board.
+Prototype of =:cl-forja= suits well for actual code development runs.
+** 0.1.0 [2020-03-09 Mon]
+Project start. Prototype being outlined in CL.
