@@ -61,7 +61,7 @@
 
 (defgeneric siesta-lattice-properties (latt))
 
-(defmethod siesta-lattice-properties ((latt lattice-Cubic))
+(defmethod siesta-lattice-properties ((latt cl-forja/lattices::lattice-Cubic))
   (list :alat-value (format nil "~,8f" (lattice-alat latt))
         :alat-units (format nil "~a" (lattice-units latt))
         :lattice-parameters (format nil "~&  1.0  1.0  1.0  90  90  90")))

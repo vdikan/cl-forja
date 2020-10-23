@@ -77,10 +77,10 @@
 
 (defgeneric qe-lattice-properties (latt))
 
-(defmethod qe-lattice-properties ((latt lattice-Cubic))
+(defmethod qe-lattice-properties ((latt cl-forja/lattices::lattice-Cubic))
   (list :ibrav "1" :celldm1 (format nil "~,8f" (celldm1 latt))))
 
-(defmethod qe-lattice-properties ((latt lattice-cF))
+(defmethod qe-lattice-properties ((latt cl-forja/lattices::lattice-cF))
   (list :ibrav "2" :celldm1 (format nil "~,8f" (celldm1 latt))))
 
 
