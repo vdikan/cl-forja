@@ -91,7 +91,7 @@
 + LATTICE : lattice instance."
   (atoms nil :type atom-list)
   (kinds nil :type kind-reference)
-  (lattice (make-lattice) :type lattice))
+  (lattice (cl-forja/lattices::make-lattice) :type lattice))
 
 
 (declaim (ftype (function (cstruct) integer) number-of-kinds))

@@ -1,6 +1,7 @@
 (defpackage cl-forja/lattices
   (:use :cl)
   (:export
+   :lattice
    :lattice-p
    :lattice-alat
    :lattice-units
@@ -9,6 +10,7 @@
    :lattice-alpha
    :lattice-beta
    :lattice-gamma
+   :make-lattice
    :make-lattice-cP
    :make-lattice-cI
    :make-lattice-cF

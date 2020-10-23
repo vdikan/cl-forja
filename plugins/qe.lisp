@@ -65,7 +65,7 @@
 ;; Well, have a look at this:
 ;; https://www.quantum-espresso.org/Doc/INPUT_PW.html#ibrav
 
-(declaim (ftype (function (lattice) real) celldm1))
+(declaim (ftype (function (cl-forja/lattices::lattice) real) celldm1))
 
 (defun celldm1 (latt)
   "Get the celldm1 for the LATTice in corect units, that is `Bohr`."
